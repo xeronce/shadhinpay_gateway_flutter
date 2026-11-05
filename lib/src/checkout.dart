@@ -17,7 +17,8 @@ class ShadhinPayCheckout {
         !(defaultTargetPlatform == TargetPlatform.android ||
             defaultTargetPlatform == TargetPlatform.iOS)) {
       throw UnsupportedError(
-          'ShadhinPay checkout supports Android and iOS only');
+        'ShadhinPay checkout supports Android and iOS only',
+      );
     }
     final result = await Navigator.of(context).push<ShadhinPayCheckoutResult>(
       MaterialPageRoute(builder: (_) => _CheckoutPage(session: session)),
@@ -49,18 +50,22 @@ class _CheckoutPageState extends State<_CheckoutPage> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(
-        onProgress: (value) {
-          if (mounted) setState(() => _progress = value);
-        },
-        onNavigationRequest: _navigate,
-        onWebResourceError: (error) {
-          if (mounted && error.isForMainFrame == true) {
-            setState(() =>
-                _error = 'Checkout could not load. Check your connection.');
-          }
-        },
-      ))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (value) {
+            if (mounted) setState(() => _progress = value);
+          },
+          onNavigationRequest: _navigate,
+          onWebResourceError: (error) {
+            if (mounted && error.isForMainFrame == true) {
+              setState(
+                () =>
+                    _error = 'Checkout could not load. Check your connection.',
+              );
+            }
+          },
+        ),
+      )
       ..loadRequest(widget.session.paymentUrl);
   }
 
@@ -77,8 +82,10 @@ class _CheckoutPageState extends State<_CheckoutPage> {
           Navigator.of(context).pop(result);
         }
       } on FormatException {
-        setState(() => _error =
-            'Checkout return did not match this payment. Close and verify with your merchant.');
+        setState(
+          () => _error =
+              'Checkout return did not match this payment. Close and verify with your merchant.',
+        );
       }
       return NavigationDecision.prevent;
     }
@@ -87,8 +94,10 @@ class _CheckoutPageState extends State<_CheckoutPage> {
         uri.host.isEmpty ||
         uri.userInfo.isNotEmpty) {
       if (request.isMainFrame) {
-        setState(() => _error =
-            'This payment requires an unsupported external app or URL. Close and verify with your merchant.');
+        setState(
+          () => _error =
+              'This payment requires an unsupported external app or URL. Close and verify with your merchant.',
+        );
       }
       return NavigationDecision.prevent;
     }
@@ -106,34 +115,44 @@ class _CheckoutPageState extends State<_CheckoutPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('ShadhinPay'),
-          leading: IconButton(
-            tooltip: 'Close checkout',
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        body: SafeArea(
-          child: Column(children: [
-            if (_progress < 100 && _error == null)
-              LinearProgressIndicator(
-                  value: _progress / 100, semanticsLabel: 'Loading checkout'),
-            Expanded(
-                child: _error != null
-                    ? Center(
-                        child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child:
-                            Column(mainAxisSize: MainAxisSize.min, children: [
+    appBar: AppBar(
+      title: const Text('ShadhinPay'),
+      leading: IconButton(
+        tooltip: 'Close checkout',
+        icon: const Icon(Icons.close),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    ),
+    body: SafeArea(
+      child: Column(
+        children: [
+          if (_progress < 100 && _error == null)
+            LinearProgressIndicator(
+              value: _progress / 100,
+              semanticsLabel: 'Loading checkout',
+            ),
+          Expanded(
+            child: _error != null
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
                           Text(_error!, textAlign: TextAlign.center),
                           const SizedBox(height: 16),
                           FilledButton(
-                              onPressed: _retry, child: const Text('Retry')),
-                        ]),
-                      ))
-                    : WebViewWidget(controller: _controller)),
-          ]),
-        ),
-      );
+                            onPressed: _retry,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : WebViewWidget(controller: _controller),
+          ),
+        ],
+      ),
+    ),
+  );
 }

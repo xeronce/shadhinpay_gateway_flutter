@@ -6,21 +6,26 @@ class ShadhinPayCheckoutSession {
     required this.paymentId,
     required String paymentUrl,
     required String returnUrl,
-  })  : paymentUrl = _httpsUrl(paymentUrl, 'paymentUrl'),
-        returnUrl = _httpsUrl(returnUrl, 'returnUrl') {
+  }) : paymentUrl = _httpsUrl(paymentUrl, 'paymentUrl'),
+       returnUrl = _httpsUrl(returnUrl, 'returnUrl') {
     if (paymentId.isEmpty || paymentId.trim() != paymentId) {
       throw ArgumentError.value(
-          paymentId, 'paymentId', 'Must not be empty or padded');
+        paymentId,
+        'paymentId',
+        'Must not be empty or padded',
+      );
     }
     if (this.returnUrl.queryParametersAll.keys.any(
-          (key) => const {'paymentId', 'paymentID', 'status'}.contains(key),
-        )) {
+      (key) => const {'paymentId', 'paymentID', 'status'}.contains(key),
+    )) {
       throw ArgumentError(
-          'returnUrl must not contain paymentId, paymentID or status');
+        'returnUrl must not contain paymentId, paymentID or status',
+      );
     }
     if (isReturnUrl(this.paymentUrl)) {
       throw ArgumentError(
-          'paymentUrl and returnUrl must use different endpoints');
+        'paymentUrl and returnUrl must use different endpoints',
+      );
     }
   }
 
@@ -35,8 +40,11 @@ class ShadhinPayCheckoutSession {
         uri.host.isEmpty ||
         uri.userInfo.isNotEmpty ||
         uri.hasFragment) {
-      throw ArgumentError.value(value, name,
-          'Must be an absolute HTTPS URL without user info or fragment');
+      throw ArgumentError.value(
+        value,
+        name,
+        'Must be an absolute HTTPS URL without user info or fragment',
+      );
     }
     return uri;
   }
@@ -61,16 +69,19 @@ class ShadhinPayCheckoutSession {
       final actual = params[entry.key];
       if (actual == null ||
           actual.length != entry.value.length ||
-          !Iterable<int>.generate(actual.length)
-              .every((i) => actual[i] == entry.value[i])) {
+          !Iterable<int>.generate(
+            actual.length,
+          ).every((i) => actual[i] == entry.value[i])) {
         throw const FormatException(
-            'Return query does not match checkout session');
+          'Return query does not match checkout session',
+        );
       }
     }
     final ids = [...?params['paymentId'], ...?params['paymentID']];
     if (ids.length != 1 || ids.single != paymentId) {
       throw const FormatException(
-          'Return payment ID does not match checkout session');
+        'Return payment ID does not match checkout session',
+      );
     }
     final statuses = params['status'];
     if (statuses != null && statuses.length != 1) {

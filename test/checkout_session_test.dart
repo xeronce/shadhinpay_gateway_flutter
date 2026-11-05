@@ -3,10 +3,10 @@ import 'package:shadhinpay_gateway_flutter/shadhinpay_gateway_flutter.dart';
 
 void main() {
   ShadhinPayCheckoutSession session() => ShadhinPayCheckoutSession(
-        paymentId: 'PAY_test',
-        paymentUrl: 'https://request.shadhinpay.com/payment/PAY_test',
-        returnUrl: 'https://merchant.example/pay/return?state=nonce',
-      );
+    paymentId: 'PAY_test',
+    paymentUrl: 'https://request.shadhinpay.com/payment/PAY_test',
+    returnUrl: 'https://merchant.example/pay/return?state=nonce',
+  );
   String callback(String status) =>
       'https://merchant.example/pay/return?state=nonce&paymentId=PAY_test&status=$status';
 
@@ -45,8 +45,9 @@ void main() {
 
   test('rejects wrong ID, missing state, duplicates and fragments', () {
     for (final url in [
-      callback('success')
-          .replaceFirst('paymentId=PAY_test', 'paymentId=PAY_other'),
+      callback(
+        'success',
+      ).replaceFirst('paymentId=PAY_test', 'paymentId=PAY_other'),
       callback('success').replaceFirst('state=nonce&', ''),
       callback('success').replaceFirst('state=nonce', 'state=wrong'),
       '${callback('success')}&paymentId=PAY_test',
@@ -61,17 +62,21 @@ void main() {
 
   test('accepts legacy paymentID and missing status as unknown', () {
     expect(
-        session()
-            .parseReturnUrl(
-                callback('success').replaceFirst('paymentId=', 'paymentID='))!
-            .outcome,
-        ShadhinPayCheckoutOutcome.completed);
+      session()
+          .parseReturnUrl(
+            callback('success').replaceFirst('paymentId=', 'paymentID='),
+          )!
+          .outcome,
+      ShadhinPayCheckoutOutcome.completed,
+    );
     expect(
-        session()
-            .parseReturnUrl(
-                'https://merchant.example/pay/return?state=nonce&paymentId=PAY_test')!
-            .outcome,
-        ShadhinPayCheckoutOutcome.unknown);
+      session()
+          .parseReturnUrl(
+            'https://merchant.example/pay/return?state=nonce&paymentId=PAY_test',
+          )!
+          .outcome,
+      ShadhinPayCheckoutOutcome.unknown,
+    );
   });
 
   test('rejects unsafe configuration', () {
@@ -79,26 +84,32 @@ void main() {
       'http://example.com',
       '/relative',
       'https://user@example.com',
-      'https://example.com/#x'
+      'https://example.com/#x',
     ]) {
       expect(
-          () => ShadhinPayCheckoutSession(
-              paymentId: 'PAY_test',
-              paymentUrl: url,
-              returnUrl: 'https://merchant.example/return'),
-          throwsArgumentError);
+        () => ShadhinPayCheckoutSession(
+          paymentId: 'PAY_test',
+          paymentUrl: url,
+          returnUrl: 'https://merchant.example/return',
+        ),
+        throwsArgumentError,
+      );
     }
     expect(
-        () => ShadhinPayCheckoutSession(
-            paymentId: '',
-            paymentUrl: 'https://example.com/pay',
-            returnUrl: 'https://merchant.example/return'),
-        throwsArgumentError);
+      () => ShadhinPayCheckoutSession(
+        paymentId: '',
+        paymentUrl: 'https://example.com/pay',
+        returnUrl: 'https://merchant.example/return',
+      ),
+      throwsArgumentError,
+    );
     expect(
-        () => ShadhinPayCheckoutSession(
-            paymentId: 'PAY_test',
-            paymentUrl: 'https://example.com/pay',
-            returnUrl: 'https://merchant.example/return?status=success'),
-        throwsArgumentError);
+      () => ShadhinPayCheckoutSession(
+        paymentId: 'PAY_test',
+        paymentUrl: 'https://example.com/pay',
+        returnUrl: 'https://merchant.example/return?status=success',
+      ),
+      throwsArgumentError,
+    );
   });
 }
