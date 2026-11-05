@@ -1,0 +1,19 @@
+name: shadhinpay_gateway_flutter
+description: Backend-independent ShadhinPay hosted checkout for Flutter Android and iOS apps. No merchant secrets required in your app.
+version: 0.1.0
+# Add your public repository URL before publishing.
+environment:
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: '>=3.44.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_flutter: ^4.14.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  uses-material-design: true
+platforms:
+  android:
+  ios:
