@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Checkout screen uses white background; AppBar and progress bar colours updated.
+
 ## 0.1.0
 
 - Backend-independent Android/iOS hosted checkout using WebView.

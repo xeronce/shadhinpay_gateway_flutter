@@ -114,44 +114,67 @@ class _CheckoutPageState extends State<_CheckoutPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('ShadhinPay'),
-      leading: IconButton(
-        tooltip: 'Close checkout',
-        icon: const Icon(Icons.close),
-        onPressed: () => Navigator.of(context).pop(),
+  Widget build(BuildContext context) => Theme(
+    data: ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF00704A),
+        brightness: Brightness.light,
+      ),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        foregroundColor: Color(0xFF1A1A1A),
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
       ),
     ),
-    body: SafeArea(
-      child: Column(
-        children: [
-          if (_progress < 100 && _error == null)
-            LinearProgressIndicator(
-              value: _progress / 100,
-              semanticsLabel: 'Loading checkout',
-            ),
-          Expanded(
-            child: _error != null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(_error!, textAlign: TextAlign.center),
-                          const SizedBox(height: 16),
-                          FilledButton(
-                            onPressed: _retry,
-                            child: const Text('Retry'),
-                          ),
-                        ],
+    child: Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('ShadhinPay'),
+        leading: IconButton(
+          tooltip: 'Close checkout',
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: const Color(0xFFE0E0E0)),
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            if (_progress < 100 && _error == null)
+              LinearProgressIndicator(
+                value: _progress / 100,
+                semanticsLabel: 'Loading checkout',
+                color: const Color(0xFF00704A),
+                backgroundColor: const Color(0xFFE0F2EC),
+              ),
+            Expanded(
+              child: _error != null
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_error!, textAlign: TextAlign.center),
+                            const SizedBox(height: 16),
+                            FilledButton(
+                              onPressed: _retry,
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                : WebViewWidget(controller: _controller),
-          ),
-        ],
+                    )
+                  : WebViewWidget(controller: _controller),
+            ),
+          ],
+        ),
       ),
     ),
   );
