@@ -132,7 +132,7 @@ class _CheckoutPageState extends State<_CheckoutPage> {
     child: Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('ShadhinPay'),
+        title: const Text('Checkout'),
         leading: IconButton(
           tooltip: 'Close checkout',
           icon: const Icon(Icons.close),

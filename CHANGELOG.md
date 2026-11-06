@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Checkout AppBar title changed from "ShadhinPay" to "Checkout" to give merchant brand priority.
+
 ## 0.1.1
 
 - Checkout screen uses white background; AppBar and progress bar colours updated.
