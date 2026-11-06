@@ -18,14 +18,6 @@ Once published:
 flutter pub add shadhinpay_gateway_flutter
 ```
 
-Before publication, use a local path dependency:
-
-```yaml
-dependencies:
-  shadhinpay_gateway_flutter:
-    path: ../shadhinpay-gateway-flutter
-```
-
 Requirements: Dart 3.12+, Flutter 3.44+, Android API 24+, iOS 13+. Actual minimums may increase with the resolved `webview_flutter` version; commit your app lockfile and check its platform requirements.
 
 Android: add Internet permission to `android/app/src/main/AndroidManifest.xml`, outside `<application>`:
